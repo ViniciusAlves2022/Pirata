@@ -1,0 +1,49 @@
+import mysql.connector
+from conexao import conexao
+
+class modelNovo:
+    def __init__(self):
+        self.db_connection = conexao()#Abrindo a conexao com o banco de dados
+        self.db_connection = self.db_connection.conectar()#Método que realizar a conexão com o BD
+        self.con = self.db_connection.cursor()#Navegação no banco de dados
+
+    def inserir(self, nome, telefone, endereco, email, CID, salario, dataDeNascimento):
+        try:
+            sql = "insert into pessoa(codigo, nome, telefone, endereco, email, CID, salario, dataDeNascimento) values('','{}','{}','{}','{}', '{}', '{}', '{}')".format(nome, telefone, endereco, email, CID, salario, dataDeNascimento)
+            self.con.execute(sql)
+            self.db_connection.commit()#Insere o dado no banco de dados
+            return "{} linha afetada".format(self.con.rowcount)
+        except Exception as erro:
+            return erro
+
+    def selecionar(self):
+        try:
+            sql = "select * from pessoa"
+            self.con.execute(sql)
+            msg = ""
+
+            for (codigo, nome, telefone, endereco, dataDeNascimento) in self.con:
+                msg = msg + "\nCódigo: {}, Nome: {}, Telefone: {}, Endereço: {}, Data de Nascimento: {}".format(codigo, nome, telefone, endereco, dataDeNascimento)
+            return msg
+        except Exception as erro:
+            return erro
+
+    def atualizar(self, campo, novoDado, cod):
+        try:
+            sql = "update pessoa set {} = '{}' where codigo = '{}'".format(campo, novoDado, cod)
+            self.con.execute(sql)
+            self.db_connection.commit()
+            return "{} linha atualizada!".format(self.con.rowcount)
+        except Exception as erro:
+            return erro
+
+    def excluir(self, cod):
+        try:
+            sql = "delete from pessoa where codigo = '{}'".format(cod)
+            self.con.execute(sql)
+            self.db_connection.commit()
+            return "{} linha excluida!".format(self.con.rowcount)
+        except Exception as erro:
+            return erro
+
+    
